@@ -1,0 +1,79 @@
+cmake_minimum_required(VERSION 3.0.0)
+project(conn VERSION 0.1.0)
+
+
+set(SOURCE_DIR src)
+set(SOURCE_FILES ${SOURCE_DIR}/connection.cpp)
+
+include(CTest)
+enable_testing()
+
+set(CMAKE_CXX_STANDARD 11)
+
+
+# VCPKG
+include(/mnt/c/Users/Da/Desktop/dev/CPP/vcpkg/scripts/buildsystems/vcpkg.cmake)
+
+set(CMAKE_TOOLCHAIN_FILE /mnt/c/Users/Da/Desktop/dev/CPP/vcpkg/scripts/buildsystems/vcpkg.cmake
+  CACHE STRING "Vcpkg toolchain file")
+
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
+
+
+
+# Packages
+find_package(Threads REQUIRED)
+target_link_libraries(${PROJECT_NAME}  PRIVATE Threads::Threads)
+
+find_package(Boost 1.75.0 REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Boost::boost)
+
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE unofficial::sqlite3::sqlite3)
+
+
+# find_package(libbsoncxx  REQUIRED)
+# target_link_libraries(${PROJECT_NAME} PRIVATE  ${LIBBSONCXX_LIBRARIES})
+
+# target_include_directories(${PROJECT_NAME} PRIVATE ${LIBBSONCXX_INCLUDE_DIRS}})
+# target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBBSONCXX_LIBRARIES})
+# target_compile_definitions(${PROJECT_NAME} PRIVATE ${LIBBSONCXX_DEFINITIONS})
+
+
+find_package(libbsoncxx REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBBSONCXX_LIBRARIES})
+
+find_package(libmongocxx REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBBSONCXX_LIBRARIES})
+
+
+include_directories(${LIBMONGOCXX_INCLUDE_DIRS} ${LIBBSONCXX_INCLUDE_DIRS})
+include_directories("${LIBMONGOCXX_INCLUDE_DIRS}/mongocxx/v_noabi")
+include_directories( ${LIBBSONCXX_INCLUDE_DIRS})
+
+add_library(libmongocxx INTERFACE IMPORTED)
+add_library(libbsoncxx INTERFACE IMPORTED)
+
+link_directories(${LIBMONGOCXX_INCLUDE_DIRS})
+link_directories(${LIBBSONCXX_INCLUDE_DIR})
+
+# include_directories("/usr/include/mongocxx/v_noabi")
+# include_directories("/usr/include/bsoncxx/v_noabi")
+# include_directories("/usr/include/libmongoc-1.0")
+# include_directories("/usr/include/libbson-1.0")
+# include_directories("/usr/lib")
+
+message("LIBBSONCXX_INCLUDE_DIRS = ${LIBBSONCXX_INCLUDE_DIRS}")
+message("LIBBSONCXX_LIBRARIES = ${LIBBSONCXX_LIBRARIES}")
+message("LIBMONGOCXX_INCLUDE_DIRS = ${LIBMONGOCXX_INCLUDE_DIRS}")
+message("LIBMONGOCXX_LIBRARIES = ${LIBMONGOCXX_LIBRARIES}")
+
+
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
+
+# /usr/bin/cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_C_COMPILER:FILEPATH=/bin/gcc-9 -DCMAKE_CXX_COMPILER:FILEPATH=/bin/g++-9 -H/mnt/c/Users/Da/Desktop/dev/CPP/mongo -B/mnt/c/Users/Da/Desktop/dev/CPP/mongo/build -G "Unix Makefiles"
