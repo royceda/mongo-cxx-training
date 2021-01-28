@@ -16,6 +16,7 @@ cd dependencies && ./script.sh
 mkdir build
 cd build 
 cmake ..
+cmake  --build . --config Debug --target all -- -j 10 .. # or make -j 10 
 ```
 
 ## Run
